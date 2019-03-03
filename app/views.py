@@ -9,7 +9,7 @@ from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm
-from app.models import UserProfile
+from app.models import UserProfile 
 from werkzeug.security import check_password_hash
 
 ###
@@ -72,9 +72,12 @@ def load_user(id):
 # The functions below should be applicable to all Flask apps.
 ### 
 @app.route('/secure-page')
-@login_manager
+#@login_manager
 def secure_page():
-    return render_template("secure-page.html")
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    return render_template('secure-page.html')
+
 @app.route('/logout') 
 def logout():
     logout_user()
