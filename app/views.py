@@ -72,10 +72,14 @@ def load_user(id):
 # The functions below should be applicable to all Flask apps.
 ### 
 @app.route('/secure-page')
-#@login_manager
+@login_manager
 def secure_page():
     return render_template("secure-page.html")
-
+@app.route('/logout') 
+def logout():
+    logout_user()
+    flash('Logged out successfully.', 'success')
+    return render_template('home.html')
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
