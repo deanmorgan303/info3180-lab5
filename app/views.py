@@ -9,9 +9,8 @@ from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm
-from app.models import UserProfile 
+from app.models import UserProfile
 from werkzeug.security import check_password_hash
-
 
 ###
 # Routing for your application.
@@ -40,7 +39,7 @@ def login():
             username = form.username.data 
             password =form.password.data 
             
-            user = UserProfile.query.filter(username=username).first() 
+            user = UserProfile.query.filter_by(username=username).first()
             if user is not None and check_password_hash(user.password,password):
                 remember_me=False  
                 if 'remember_me'in request.form:
@@ -54,7 +53,9 @@ def login():
 
             # get user id, load into session 
             
-            login_user(user,remember=remember_me)
+                login_user(user,remember=remember_me) 
+                flash('Logged in successfully.', 'success') 
+                return redirect(url_for("secure-page"))
 
             # remember to flash a message to the user
             return redirect(url_for("home"))  # they should be redirected to a secure-page route instead
@@ -69,7 +70,11 @@ def load_user(id):
 
 ###
 # The functions below should be applicable to all Flask apps.
-###
+### 
+@app.route('/secure-page')
+#@login_manager
+def secure_page():
+    return render_template("secure-page.html")
 
 
 @app.route('/<file_name>.txt')
